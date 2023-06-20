@@ -1,0 +1,75 @@
+using System.Data;
+using System.Data.SqlClient;
+using System.Runtime.CompilerServices;
+
+namespace Conocimiento
+
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            
+        }
+
+        public DataTable llenar(){
+
+            Conexion.Conectar();
+            DataTable dt = new DataTable();
+            String consulta = "SELECT * FROM usuario";
+            SqlCommand cmd = new SqlCommand(consulta, Conexion.Conectar());
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            da.Fill(dt);
+            return dt;
+        }
+
+        private void button2_Click(object sender, EventArgs e)//Boton "Modificar"
+        {
+            Conexion.Conectar();
+            String consulta = "UPDATE usuario SET nombre=@nombre, Carrera=@Carrera, edad=@edad WHERE idUsuario=@id";
+            SqlCommand cmd = new SqlCommand(consulta, Conexion.Conectar());
+            cmd.Parameters.AddWithValue("@id", txtDocumento.Text.ToString());
+            cmd.Parameters.AddWithValue("@nombre", txtNombre.Text.ToString());
+            cmd.Parameters.AddWithValue("@Carrera", txtCarrera.Text.ToString());
+            cmd.Parameters.AddWithValue("@edad", txtEdad.Text.ToString());
+            cmd.ExecuteNonQuery();
+
+            MessageBox.Show("Campo Modificado con Exito");
+        }
+
+        private void button1_Click(object sender, EventArgs e)//Boton "Agregar"
+        {
+            Conexion.Conectar();
+            String consulta = "INSERT INTO usuario (idUsuario, nombre, Carrera, edad) VALUES (@id, @nombre, @Carrera, @edad)";
+            SqlCommand cmd = new SqlCommand(consulta, Conexion.Conectar());
+            cmd.Parameters.AddWithValue("@id", txtDocumento.Text.ToString());
+            cmd.Parameters.AddWithValue("@nombre", txtNombre.Text.ToString());
+            cmd.Parameters.AddWithValue("@Carrera", txtCarrera.Text.ToString());
+            cmd.Parameters.AddWithValue("@edad", txtEdad.Text.ToString());
+            cmd.ExecuteNonQuery();
+
+            MessageBox.Show("Campo Agregado con Exito");
+        }
+
+        private void button3_Click(object sender, EventArgs e)//Boton "Eliminar"
+        {
+            Conexion.Conectar();
+            String consulta = "DELETE FROM usuario WHERE idUsuario=@id";
+            SqlCommand cmd = new SqlCommand(consulta, Conexion.Conectar());
+            cmd.Parameters.AddWithValue("@id", txtDocumento.Text.ToString());
+            cmd.ExecuteNonQuery();
+
+            MessageBox.Show("Campo Eliminado con Exito");
+        }
+
+        private void button4_Click(object sender, EventArgs e)//Boton "Consultar"
+        {
+            dataGridView1.DataSource = llenar();
+        }
+    }
+}
